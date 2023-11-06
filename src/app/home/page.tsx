@@ -1,13 +1,17 @@
 "use client";
 import { Client, Databases, Account } from "appwrite";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   const [user, setUser] = useState(null);
+  const [Blots, setBlots] = useState<{ total: number; documents: Array<any> }>(
+    null
+  );
+  const client = new Client();
 
   useEffect(() => {
-    const client = new Client();
-
     const account = new Account(client);
 
     client
@@ -19,17 +23,15 @@ export default function Home() {
     response.then(
       function (response) {
         console.log(response);
-        setUser(response.$id);
+        setUser(response.name);
+        viewBlots();
       },
       function (error) {
         console.log(error);
+        router.push("/");
       }
     );
-  });
-
-  const [Blots, setBlots] = useState<{ total: number; documents: Array<any> }>(
-    null
-  );
+  }, []);
 
   const viewBlots = async () => {
     const client = new Client();
@@ -40,18 +42,23 @@ export default function Home() {
 
     const databases = new Databases(client);
 
-    const blots = await databases.listDocuments(
+    const blots = databases.listDocuments(
       process.env.NEXT_PUBLIC_DATABASE,
       process.env.NEXT_PUBLIC_BLOTS_COLLECTION
     );
 
-    console.log("blots---", blots);
+    blots.then(
+      function (response) {
+        setBlots((prev) => {
+          return { total: response.total, documents: response.documents };
+        });
 
-    setBlots((prev) => {
-      return { total: blots.total, documents: blots.documents };
-    });
-
-    console.log("Blots---", Blots);
+        console.log("Blots---", Blots);
+      },
+      function (error) {
+        console.log(error);
+      }
+    );
   };
 
   const logoutSessions = async () => {
@@ -69,7 +76,7 @@ export default function Home() {
       function (response) {
         console.log(response);
         setUser(null);
-        //redirect
+        router.push("/");
       },
       function (error) {
         console.log(error);
@@ -79,19 +86,35 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-between p-10">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <button onClick={viewBlots}>View Blots</button>
-        <button onClick={logoutSessions}>Logout User</button>
+        <button
+          onClick={() => {
+            router.push("/post");
+          }}
+        >
+          Create a Blot
+        </button>
+        <button onClick={logoutSessions} className="ml-20">
+          Logout User
+        </button>
       </div>
-      <div>
-        <h1>Blots</h1>
+      <div style={{ width: "75%" }}>
         {!!Blots &&
           Blots.documents.map((blot) => {
-            return <p>{blot.Text}</p>;
+            return (
+              <div
+                key={blot.$id}
+                className="mt-5 border-solid border-2 border-sky-500 p-3 rounded-lg"
+              >
+                <p>{blot.Text}</p>
+                <hr className="mt-2" />
+                <p>{blot.User}</p>
+              </div>
+            );
           })}
       </div>
-      hello {user}
+      Hello {user} ...
     </main>
   );
 }
