@@ -96,7 +96,7 @@ export default function Home() {
         >
           Create a Blot
         </button>
-        <button onClick={logoutSessions} className="ml-20">
+        <button onClick={logoutSessions} style={{ marginLeft: "5em" }}>
           Logout User
         </button>
       </div>
