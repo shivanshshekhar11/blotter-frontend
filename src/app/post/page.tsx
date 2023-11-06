@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState("");
 
   useEffect(() => {
     const client = new Client();
@@ -13,8 +13,8 @@ export default function Home() {
     const account = new Account(client);
 
     client
-      .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT)
-      .setProject(process.env.NEXT_PUBLIC_PROJECT);
+      .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT || "")
+      .setProject(process.env.NEXT_PUBLIC_PROJECT || "");
 
     const response = account.get();
 
@@ -51,14 +51,14 @@ export default function Home() {
     const client = new Client();
 
     client
-      .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT)
-      .setProject(process.env.NEXT_PUBLIC_PROJECT);
+      .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT || "")
+      .setProject(process.env.NEXT_PUBLIC_PROJECT || "");
 
     const databases = new Databases(client);
 
     const response = databases.createDocument(
-      process.env.NEXT_PUBLIC_DATABASE,
-      process.env.NEXT_PUBLIC_BLOTS_COLLECTION,
+      process.env.NEXT_PUBLIC_DATABASE || "",
+      process.env.NEXT_PUBLIC_BLOTS_COLLECTION || "",
       ID.unique(),
       {
         Text: text.value,

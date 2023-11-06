@@ -5,18 +5,19 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
   const router = useRouter();
-  const [user, setUser] = useState(null);
-  const [Blots, setBlots] = useState<{ total: number; documents: Array<any> }>(
-    null
-  );
+  const [user, setUser] = useState("");
+  const [Blots, setBlots] = useState<{ total: number; documents: Array<any> }>({
+    total: 0,
+    documents: [],
+  });
   const client = new Client();
 
   useEffect(() => {
     const account = new Account(client);
 
     client
-      .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT)
-      .setProject(process.env.NEXT_PUBLIC_PROJECT);
+      .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT || "")
+      .setProject(process.env.NEXT_PUBLIC_PROJECT || "");
 
     const response = account.get();
 
@@ -37,14 +38,14 @@ export default function Home() {
     const client = new Client();
 
     client
-      .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT)
-      .setProject(process.env.NEXT_PUBLIC_PROJECT);
+      .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT || "")
+      .setProject(process.env.NEXT_PUBLIC_PROJECT || "");
 
     const databases = new Databases(client);
 
     const blots = databases.listDocuments(
-      process.env.NEXT_PUBLIC_DATABASE,
-      process.env.NEXT_PUBLIC_BLOTS_COLLECTION
+      process.env.NEXT_PUBLIC_DATABASE || "",
+      process.env.NEXT_PUBLIC_BLOTS_COLLECTION || ""
     );
 
     blots.then(
@@ -67,15 +68,15 @@ export default function Home() {
     const account = new Account(client);
 
     client
-      .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT)
-      .setProject(process.env.NEXT_PUBLIC_PROJECT);
+      .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT || "")
+      .setProject(process.env.NEXT_PUBLIC_PROJECT || "");
 
     const response = account.deleteSessions();
 
     response.then(
       function (response) {
         console.log(response);
-        setUser(null);
+        setUser("");
         router.push("/");
       },
       function (error) {

@@ -11,8 +11,8 @@ export default function Home() {
     const account = new Account(client);
 
     client
-      .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT)
-      .setProject(process.env.NEXT_PUBLIC_PROJECT);
+      .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT || "")
+      .setProject(process.env.NEXT_PUBLIC_PROJECT || "");
 
     const response = account.get();
 
@@ -42,8 +42,8 @@ export default function Home() {
     const account = new Account(client);
 
     client
-      .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT)
-      .setProject(process.env.NEXT_PUBLIC_PROJECT);
+      .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT || "")
+      .setProject(process.env.NEXT_PUBLIC_PROJECT || "");
 
     const response = account.create(
       ID.unique(),
